@@ -50,5 +50,8 @@ export const registerValidator = [
     .isIn(["buyer", "seller"])
     .withMessage("Role must be buyer or seller"),
 
+    body("isSeller")
+    .isBoolean().withMessage("isSeller must be a boolean value"),
+    
     validateRequest
 ];
