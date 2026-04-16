@@ -24,9 +24,9 @@ async function sendTokenResponse(user, res, message){
     })
 }
 
-export const Register = async ()=>{
+export const Register = async (req, res)=>{
     const { email, contact, password, fullname, isSeller } = req.body;
-
+    
     try {
         const existingUser = await userModel.findOne({
             $or: [
@@ -57,4 +57,30 @@ export const Register = async ()=>{
             message: "Server error"
         })
     }
+}
+
+export const Login = async (req, res) => {
+    const { email, password } = req.body;
+
+    const user = await userModel.findOne({ email });
+    if(!user){
+        return res.status(400).json({
+            message: "Invalid credentials"
+        })
+    }
+
+    const isMatch = await user.comparePassword(password);
+
+    if(!isMatch){
+        return res.status(400).json({
+            message: "Invalid credentials"
+        })
+    }
+
+    await sendTokenResponse(user, res, "User logged in successfully");
+}
+
+export const googleCallback = async (req, res) => {
+    console.log(req.user);
+    res.redirect("http://localhost:5173/");
 }

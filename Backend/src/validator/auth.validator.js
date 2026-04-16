@@ -1,8 +1,7 @@
 import { body, validationResult } from "express-validator";
 
-
-function validateRequest(req, res, next){
-    const errors = validationResult(req);
+function validateRequest(req, res, next) {
+  const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
     return res.status(400).json({
@@ -50,8 +49,23 @@ export const registerValidator = [
     .isIn(["buyer", "seller"])
     .withMessage("Role must be buyer or seller"),
 
-    body("isSeller")
-    .isBoolean().withMessage("isSeller must be a boolean value"),
-    
-    validateRequest
+  body("isSeller").isBoolean().withMessage("isSeller must be a boolean value"),
+
+  validateRequest,
+];
+
+export const loginValidator = [
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Enter a valid email"),
+  body("password")
+    .trim()
+    .notEmpty()
+    .withMessage("Password is required")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters"),
+    validateRequest,
 ];
