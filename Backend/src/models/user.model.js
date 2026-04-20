@@ -9,11 +9,13 @@ const userSchema = new mongoose.Schema({
     },
     contact: {
         type: String,
-        required: true,
+        required: false,
     },
     password: {
         type: String,
-        required: true,
+        required: function () {
+            return !this.googleId;
+        },
     },
     fullname: {
         type: String,
@@ -24,6 +26,9 @@ const userSchema = new mongoose.Schema({
         enum: ["buyer", "seller"],
         default: "buyer",
     },
+    googleId: {
+        type: String,
+    }
 })
 
 userSchema.pre("save", async function (next) {

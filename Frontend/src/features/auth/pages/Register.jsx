@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useAuth } from "../hooks/useAuth.js";
 import { useNavigate } from "react-router";
+import ContinueWithGoogle from "../components/ContinueWithGoogle.jsx";
 
 const Register = () => {
   const { handleRegister } = useAuth();
@@ -154,17 +155,7 @@ const Register = () => {
               Sign up as a Seller
             </label>
           </div>
-          <a
-            href="api/auth/google"
-            className="w-full flex items-center justify-center gap-3 rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm transition hover:bg-gray-50"
-          >
-            <img
-              src="https://www.svgrepo.com/show/475656/google-color.svg"
-              alt="Google"
-              className="h-5 w-5"
-            />
-            Continue with Google
-          </a>
+          <ContinueWithGoogle />
           <button
             type="submit"
             className="w-full bg-yellow-500 hover:bg-yellow-400 text-neutral-950 font-bold py-4 px-6 rounded-2xl transition-all duration-200 mt-8 shadow-[0_0_20px_rgba(234,179,8,0.15)] hover:shadow-[0_0_25px_rgba(234,179,8,0.25)] hover:-translate-y-0.5 active:translate-y-0"
