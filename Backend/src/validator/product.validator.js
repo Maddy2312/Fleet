@@ -36,7 +36,7 @@ export const createProductValidator = [
 
   body("priceCurrency")
     .optional()
-    .isIn(["USD", "EUR", "GBP", "JPY", "INR"])
+    .isIn(["USD", "EUR", "GBP", "JPY", "INR", "AUD"])
     .withMessage("Invalid currency"),
 
   validateRequest,

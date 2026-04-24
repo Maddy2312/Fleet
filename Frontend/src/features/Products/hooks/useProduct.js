@@ -1,5 +1,5 @@
 import { useDispatch } from "react-redux";
-import { createProduct, getSellerProducts } from "../service/product.api.js";
+import { createProduct, getSellerProducts } from "../services/product.api.js";
 import { setSellerProducts } from "../state/product.slice.js";
 
 
