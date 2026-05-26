@@ -22,7 +22,7 @@ async function generateToken(user, res, message) {
 
 export const registerUser = async (req, res) => {
   try {
-    const { name, email, password, contact, role } = req.body;
+    const { name, email, password, contact, isSeller } = req.body;
 
     // check existing user
     const existingUser = await userModel.findOne({
@@ -42,7 +42,7 @@ export const registerUser = async (req, res) => {
       email,
       password,
       contact,
-      role,
+      role: isSeller ? "seller" : "buyer",
     });
 
     // store in cookie

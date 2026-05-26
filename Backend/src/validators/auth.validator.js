@@ -39,10 +39,10 @@ export const registerValidator = [
         .withMessage("Contact is required")
         .isMobilePhone()
         .withMessage("Invalid contact number"),
-
-    body("role")
-        .optional()
-        .isIn(["buyer", "seller"])
-        .withMessage("Role must be buyer or seller"),
-        validate
+    body("isSeller")
+        .notEmpty()
+        .withMessage("isSeller is required")
+        .isBoolean()
+        .withMessage("isSeller must be a boolean value"),
+    validate
 ];
