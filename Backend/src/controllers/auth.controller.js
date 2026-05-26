@@ -47,10 +47,43 @@ export const registerUser = async (req, res) => {
 
     // store in cookie
     await generateToken(user, res, "User registered successfully");
-
   } catch (error) {
     console.log(error);
     return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+export const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // check user exists
+    const user = await userModel.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    // compare password
+    const isMatch = await user.comparePassword(password);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid credentials",
+      });
+    }
+
+    await generateToken(user, res, "User logged in successfully");
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
       success: false,
       message: error.message,
     });
