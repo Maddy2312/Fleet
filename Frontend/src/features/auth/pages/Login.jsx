@@ -128,7 +128,7 @@ const Login = () => {
                     <p className="text-center text-sm text-gray-400 mt-6">
                         Don't have an account?
                         <span className="text-white cursor-pointer hover:underline ml-1">
-                            Register
+                            <a href="/Register">Register</a>
                         </span>
                     </p>
 
