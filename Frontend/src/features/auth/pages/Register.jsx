@@ -40,7 +40,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#1e1e1e] flex items-center justify-center px-8">
+    <div className="min-h-screen bg-[#1e1e1e] flex justify-center px-8 py-2">
       <div className="w-full bg-black rounded-2xl overflow-hidden shadow-2xl grid grid-cols-1 md:grid-cols-2">
         {/* LEFT SIDE */}
         <div className="bg-gradient-to-br from-green-900 via-emerald-800 to-teal-900 text-white p-10 flex flex-col justify-center">
@@ -71,7 +71,7 @@ const RegisterPage = () => {
         </div>
 
         {/* RIGHT SIDE */}
-        <div className="p-10 bg-black text-white">
+        <div className="p-10 bg-black text-white flex flex-col justify-center">
           <h2 className="text-3xl font-bold text-center mb-2">
             Sign Up Account
           </h2>

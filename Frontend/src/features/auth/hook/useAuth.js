@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { setUser, setLoading, setError } from "../state/auth.slice.js";
-import { login, register } from "../service/auth.api.js";
+import { login, register } from "../services/auth.api.js";
 
 const useAuth = () => {
 
