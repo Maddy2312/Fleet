@@ -39,3 +39,12 @@ export const login = async ({email, password}) => {
     }
 
 };
+
+export const getUser = async () => {
+    try {
+        const response = await authApiInstance.get("/get-user");
+        return response.data;
+    } catch (error) {
+        throw error.response.data;
+    }
+}

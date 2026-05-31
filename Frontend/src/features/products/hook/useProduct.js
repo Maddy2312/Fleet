@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
-import { setSellerProducts, setLoading, setError } from "../state/product.slice.js";
-import { createProduct, getAllProducts } from "../services/product.api.js";
+import { setSellerProducts, setLoading, setError, setProducts } from "../state/product.slice.js";
+import { createProduct, getAllProducts, getProducts } from "../services/product.api.js";
 
 const useProduct = () => {
 
@@ -36,9 +36,27 @@ const useProduct = () => {
         }
 
     };
+    const handleGetProducts = async () => {
+
+        try {
+
+            const data = await getProducts();
+
+            dispatch(setProducts(data.products));
+
+            return data.products;
+
+        } catch (error) {
+
+            throw error;
+
+        }
+
+    };
      return {
         handleCreateProduct,
         handleGetAllProducts,
+        handleGetProducts,
     };
 };
 

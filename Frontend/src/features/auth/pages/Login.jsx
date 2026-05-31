@@ -30,7 +30,9 @@ const Login = () => {
             password: formData.password,
         });
 
-        if(result.success){
+        if(result.success && result.user.role === "seller"){
+            navigate("/seller/dashboard");
+        } else if(result.success && result.user.role === "buyer"){
             navigate("/");
         }
     };
