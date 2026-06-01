@@ -5,6 +5,7 @@ import CreateProducts from "../features/products/pages/CreateProducts.jsx";
 import Dashboard from "../features/products/pages/Dashboard.jsx";
 import Protected from "../features/auth/components/Protected.jsx";
 import Home from "../features/products/pages/Home.jsx";
+import ProductDetail from "../features/products/pages/ProductDetail.jsx";
 
 const routes = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const routes = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/product/:id",
+    element: <ProductDetail />,
   },
   {
     path: "/seller",

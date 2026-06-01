@@ -1,9 +1,11 @@
 import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import useProduct from "../hook/useProduct";
+import { useNavigate } from "react-router";
 
 const Home = () => {
   const { handleGetProducts } = useProduct();
+  const navigate = useNavigate();
 
   const products = useSelector(
     (state) => state.product.products
@@ -178,7 +180,7 @@ const Home = () => {
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
 
             {products?.map((product) => (
-              <div
+              <div onClick={() => navigate(`/product/${product._id}`)}
                 key={product._id}
                 className="
                   bg-[#0a0a0a]
