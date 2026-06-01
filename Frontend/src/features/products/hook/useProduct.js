@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import { setSellerProducts, setLoading, setError, setProducts } from "../state/product.slice.js";
-import { createProduct, getAllProducts, getProductDetails, getProducts } from "../services/product.api.js";
+import { createProduct, getAllProducts, getProductDetails, getProducts, updateProduct } from "../services/product.api.js";
 
 const useProduct = () => {
 
@@ -68,11 +68,27 @@ const useProduct = () => {
         }
 
     };
+    const handleCreateVariant = async (id, formData) => {
+
+        try {
+
+            const data = await updateProduct(id, formData);
+
+            return data.product;
+
+        } catch (error) {
+
+            throw error;
+
+        }
+
+    };
      return {
         handleCreateProduct,
         handleGetAllProducts,
         handleGetProducts,
         handleGetProductDetails,
+        handleCreateVariant,
     };
 };
 

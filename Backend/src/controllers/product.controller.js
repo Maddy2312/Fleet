@@ -70,3 +70,35 @@ export const getProductDetails = async (req, res) => {
     product,
   });
 }
+
+export const createProductVariant = async (req, res) => {
+  console.log(req.body)
+  const { id } = req.params;
+  const product = await productModel.findOne({
+    _id: id,
+    seller: req.user.id,
+  });
+  if (!product) {
+    return res.status(404).json({
+      success: false,
+      message: "Product not found",
+    });
+  }
+  const files = req.files;
+  const images = [];
+  if(files || files.length !== 0){
+    (await Promise.all(
+    files.map(async (file) => {
+      const image = await uploadFile({
+        buffer: file.buffer,
+        fileName: file.originalname,
+      });
+      return image
+    }))).map((img) => images.push(img));
+  }
+  const price = req.body.priceAmount;
+  const stock = req.body.stock;
+  const attributes = JSON.parse(req.body.attributes || "{}");
+
+  console.log(product, images, price, stock, attributes);
+}

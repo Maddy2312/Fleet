@@ -40,5 +40,45 @@ export const createProductValidator = [
     .isIn(["USD", "EUR", "GBP"])
     .withMessage("Currency must be USD, EUR or GBP"),
 
+  body("stock")
+    .notEmpty()
+    .withMessage("Stock is required")
+    .isInt({ min: 0 })
+    .withMessage("Stock must be 0 or greater"),
+
+  body("attributes")
+    .notEmpty()
+    .withMessage("Attributes are required")
+    .isObject()
+    .withMessage("Attributes must be an object"),
+
   validate,
 ];
+
+// export const createProductVariantValidator = [
+//   body("priceAmount")
+//     .notEmpty()
+//     .withMessage("Price amount is required")
+//     .isFloat({ min: 0.01 })
+//     .withMessage("Price amount must be greater than 0"),
+
+//   body("priceCurrency")
+//     .notEmpty()
+//     .withMessage("Currency is required")
+//     .isIn(["USD", "EUR", "GBP"])
+//     .withMessage("Currency must be USD, EUR or GBP"),
+
+//   body("stock")
+//     .notEmpty()
+//     .withMessage("Stock is required")
+//     .isInt({ min: 0 })
+//     .withMessage("Stock must be 0 or greater"),
+
+//   body("attributes")
+//     .notEmpty()
+//     .withMessage("Attributes are required")
+//     .isObject()
+//     .withMessage("Attributes must be an object"),
+
+//   validate,
+// ];

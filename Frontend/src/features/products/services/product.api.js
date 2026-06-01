@@ -22,3 +22,10 @@ export const getProductDetails = async (id) => {
     const response = await productApiInstance.get(`/detail/${id}`);
     return response.data;
 }
+export const updateProduct = async (id, formData) => {
+        for (const [key, value] of formData.entries()) {
+  console.log(key, value);
+}
+    const response = await productApiInstance.put(`/${id}/variants`, formData);
+    return response.data;
+}
