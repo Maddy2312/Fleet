@@ -105,7 +105,7 @@ const Dashboard = () => {
                     <button
                       onClick={() =>
                         navigate(
-                          `/seller/edit-product/${product._id}`
+                          `/seller/product/${product._id}`
                         )
                       }
                       className="flex-1 bg-blue-600 text-white py-2 rounded-lg"

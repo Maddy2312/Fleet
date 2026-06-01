@@ -55,7 +55,7 @@ const CreateProducts = () => {
 
       setImages([]);
       if(response.success){
-        navigate("/")
+        navigate("/seller/dashboard");
       }
     } catch (error) {
       console.error(error);
