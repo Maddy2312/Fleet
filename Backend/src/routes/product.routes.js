@@ -3,7 +3,7 @@ import authenticateSeller from "../middlewares/auth.middleware.js";
 import { createProduct, createProductVariant, getAllProducts, getProductDetails, getSellerProducts } from "../controllers/product.controller.js";
 const productRouter = Router();
 import multer from "multer";
-import { createProductValidator } from "../validators/product.validator.js";
+import { createProductValidator, createProductVariantValidator } from "../validators/product.validator.js";
 
 const storage = multer.memoryStorage();
 
@@ -18,5 +18,5 @@ productRouter.post("/create", authenticateSeller, upload.array("images", 7), cre
 productRouter.get("/seller", authenticateSeller, getSellerProducts);
 productRouter.get("/getProducts", getAllProducts);
 productRouter.get("/detail/:id", getProductDetails);
-productRouter.put("/:id/variants", authenticateSeller, upload.array("images", 7), createProductVariant);
+productRouter.post("/:id/variants", authenticateSeller, upload.array("images", 7), createProductVariantValidator, createProductVariant);
 export default productRouter;

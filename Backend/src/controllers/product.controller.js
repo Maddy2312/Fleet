@@ -72,7 +72,6 @@ export const getProductDetails = async (req, res) => {
 }
 
 export const createProductVariant = async (req, res) => {
-  console.log(req.body)
   const { id } = req.params;
   const product = await productModel.findOne({
     _id: id,
@@ -96,9 +95,25 @@ export const createProductVariant = async (req, res) => {
       return image
     }))).map((img) => images.push(img));
   }
-  const price = req.body.priceAmount;
+  const priceAmount = req.body.priceAmount;
+  const priceCurrency = req.body.priceCurrency;
   const stock = req.body.stock;
   const attributes = JSON.parse(req.body.attributes || "{}");
 
-  console.log(product, images, price, stock, attributes);
+  console.log(product, images, priceAmount, priceCurrency, stock, attributes);
+  product.variants.push({
+    images,
+    price: {
+      amount: priceAmount,
+      currency: priceCurrency || product.price.currency,
+    },
+    stock,
+    attributes,
+    });
+  await product.save();
+  return res.status(201).json({
+    success: true,
+    message: "Product variant created successfully",
+    product,
+  });
 }

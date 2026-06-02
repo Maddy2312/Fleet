@@ -26,6 +26,6 @@ export const updateProduct = async (id, formData) => {
         for (const [key, value] of formData.entries()) {
   console.log(key, value);
 }
-    const response = await productApiInstance.put(`/${id}/variants`, formData);
+    const response = await productApiInstance.post(`/${id}/variants`, formData);
     return response.data;
 }

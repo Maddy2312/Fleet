@@ -55,30 +55,41 @@ export const createProductValidator = [
   validate,
 ];
 
-// export const createProductVariantValidator = [
-//   body("priceAmount")
-//     .notEmpty()
-//     .withMessage("Price amount is required")
-//     .isFloat({ min: 0.01 })
-//     .withMessage("Price amount must be greater than 0"),
+export const createProductVariantValidator = [
+  body("priceAmount")
+    .notEmpty()
+    .withMessage("Price amount is required")
+    .isFloat({ min: 0.01 })
+    .withMessage("Price amount must be greater than 0"),
 
-//   body("priceCurrency")
-//     .notEmpty()
-//     .withMessage("Currency is required")
-//     .isIn(["USD", "EUR", "GBP"])
-//     .withMessage("Currency must be USD, EUR or GBP"),
+  body("priceCurrency")
+    .notEmpty()
+    .withMessage("Currency is required")
+    .isIn(["USD", "EUR", "GBP"])
+    .withMessage("Currency must be USD, EUR or GBP"),
 
-//   body("stock")
-//     .notEmpty()
-//     .withMessage("Stock is required")
-//     .isInt({ min: 0 })
-//     .withMessage("Stock must be 0 or greater"),
+  body("stock")
+    .notEmpty()
+    .withMessage("Stock is required")
+    .isInt({ min: 0 })
+    .withMessage("Stock must be 0 or greater"),
 
-//   body("attributes")
-//     .notEmpty()
-//     .withMessage("Attributes are required")
-//     .isObject()
-//     .withMessage("Attributes must be an object"),
+  body("attributes")
+    .notEmpty()
+    .withMessage("Attributes are required")
+    .custom((value) => {
+      const attributes = JSON.parse(value);
 
-//   validate,
-// ];
+      if (!attributes.color?.trim()) {
+        throw new Error("Color is required");
+      }
+
+      if (!attributes.size?.trim()) {
+        throw new Error("Size is required");
+      }
+
+      return true;
+    }),
+
+  validate,
+];
