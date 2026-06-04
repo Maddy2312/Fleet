@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams } from "react-router";
-import useProduct from "../hook/useProduct";
+import useProduct from "../hook/useProduct.js";
+import useCart from "../../cart/hook/useCart.js"
+
 
 const ProductDetail = () => {
   const { id } = useParams();
   const { handleGetProductDetails } = useProduct();
+  const { handleAddItem } = useCart();
 
   const [product, setProduct] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -386,7 +389,13 @@ const ProductDetail = () => {
 
             {/* ACTION BUTTONS */}
             <div className="flex gap-4 mb-8">
-              <button className="flex-1 bg-white text-black px-8 py-4 font-bold uppercase hover:bg-zinc-100 transition transform hover:scale-105 active:scale-95">
+              <button onClick={() => {
+                  handleAddItem({
+                    productId: product._id,
+                  variantId: selectedVariant._id,
+                  })
+                }
+              } className="flex-1 bg-white text-black px-8 py-4 font-bold uppercase hover:bg-zinc-100 transition transform hover:scale-105 active:scale-95">
                 Add To Cart
               </button>
               <button className="flex-1 border-2 border-white text-white px-8 py-4 uppercase font-bold hover:bg-white hover:text-black transition transform hover:scale-105 active:scale-95">
