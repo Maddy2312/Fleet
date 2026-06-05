@@ -11,3 +11,10 @@ export const addItemToCart = async ({productId, variantId}) => {
     });
     return response.data;
 }
+
+export const getCartItems = async() => {
+    const response = await cartApiInstance.get("/", {
+        withCredentials: true,
+    });
+    return response.data;
+}
