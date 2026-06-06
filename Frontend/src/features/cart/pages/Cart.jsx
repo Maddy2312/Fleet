@@ -4,7 +4,7 @@ import { Trash2, Minus, Plus } from "lucide-react";
 import useCart from "../hook/useCart.js";
 
 const Cart = () => {
-  const { handleGetCartItems } = useCart();
+  const { handleGetCartItems, handleIncrementCartItemQuantity } = useCart();
 
   const cartItems = useSelector((state) => state.cart.items);
 
@@ -133,6 +133,7 @@ const Cart = () => {
                         </span>
 
                         <button
+                          onClick={()=>handleIncrementCartItemQuantity({productId: item.product._id, variantId: item.variant})}
                           className="px-4 py-2 hover:bg-zinc-800 rounded-r-full"
                         >
                           <Plus size={16} />

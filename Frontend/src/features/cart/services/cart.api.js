@@ -18,3 +18,8 @@ export const getCartItems = async() => {
     });
     return response.data;
 }
+
+export const incrementCartItemQuantity = async ({productId, variantId}) => {
+    const response = await cartApiInstance.patch(`/quantity/increment/${productId}/${variantId}`);
+    return response.data;
+}
