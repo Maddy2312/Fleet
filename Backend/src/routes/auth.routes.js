@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { enableMfa, getUser, googleCallback, loginUser, registerUser, setupMfa, verifyMfa } from "../controllers/auth.controller.js";
+import { getUser, googleCallback, loginUser, registerUser } from "../controllers/auth.controller.js";
 import { loginValidator, registerValidator } from "../validators/auth.validator.js";
 import passport from "passport";
 import { config } from "../config/config.js";
@@ -22,16 +22,5 @@ authRouter.get(
     }), googleCallback
 );
 authRouter.get("/get-user", authenticateUser, getUser);
-authRouter.get(
-    "/setup-mfa",
-    authenticateUser,
-    setupMfa
-);
-authRouter.post(
-    "/enable-mfa",
-    authenticateUser,
-    enableMfa
-);
-authRouter.post("/verify-mfa", verifyMfa);
 
 export default authRouter;

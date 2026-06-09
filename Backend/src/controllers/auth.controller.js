@@ -1,8 +1,6 @@
 import userModel from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import { config } from "../config/config.js";
-import speakeasy from "speakeasy";
-import QRCode from "qrcode";
 
 async function generateToken(user, res, message) {
   const token = jwt.sign({ id: user._id }, config.JWT_SECRET, {
@@ -18,7 +16,6 @@ async function generateToken(user, res, message) {
       email: user.email,
       contact: user.contact,
       role: user.role,
-      mfaEnabled: user.mfaEnabled,
     },
   });
 }
@@ -82,20 +79,6 @@ export const loginUser = async (req, res) => {
         message: "Invalid credentials",
       });
     }
-    if (user.mfaEnabled) {
-      return res.json({
-        requiresMfa: true,
-        message: "MFA enabled",
-        success: true,
-        user: {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-          contact: user.contact,
-          role: user.role,
-        },
-      });
-    }
 
     await generateToken(user, res, "User logged in successfully");
   } catch (error) {
@@ -113,30 +96,26 @@ export const googleCallback = async (req, res) => {
   const profilePic = photos[0].value;
 
   const user = await userModel.findOne({
-    email,
-  });
-  if (!user) {
+    email
+  })
+  if(!user) {
     user = await userModel.create({
       email,
       googleId: id,
       name: displayName,
-    });
+    })
   }
 
-  const token = jwt.sign(
-    {
-      id: user._id,
-    },
-    config.JWT_SECRET,
-    {
-      expiresIn: "7d",
-    },
-  );
+  const token = jwt.sign({
+    id: user._id,
+  }, config.JWT_SECRET, {
+    expiresIn: "7d",
+  });
 
   res.cookie("token", token);
-
+  
   res.redirect("http://localhost:5173/");
-};
+}
 
 export const getUser = async (req, res) => {
   const user = req.user;
@@ -149,74 +128,6 @@ export const getUser = async (req, res) => {
       name: user.name,
       contact: user.contact,
       role: user.role,
-      mfaEnabled: user.mfaEnabled,
-    },
-  });
-};
-
-export const setupMfa = async (req, res) => {
-  const user = await userModel.findById(req.user.id);
-
-  const secret = speakeasy.generateSecret({
-    name: `Fleet (${user.email})`,
-  });
-
-  user.mfaSecret = secret.base32;
-  await user.save();
-
-  const qrCode = await QRCode.toDataURL(secret.otpauth_url);
-
-  res.json({
-    qrCode,
-  });
-};
-
-export const enableMfa = async (req, res) => {
-  const { token } = req.body;
-
-  const user = await userModel.findById(req.user.id);
-
-  const verified = speakeasy.totp.verify({
-    secret: user.mfaSecret,
-    encoding: "base32",
-    token,
-  });
-
-  if (!verified) {
-    return res.status(400).json({
-      message: "Invalid code",
-    });
-  }
-
-  user.mfaEnabled = true;
-  await user.save();
-
-  res.json({
-    message: "MFA enabled",
-  });
-};
-
-export const verifyMfa = async (req, res) => {
-  const { userId, token } = req.body;
-
-  const user = await userModel.findById(userId);
-
-  const verified = speakeasy.totp.verify({
-    secret: user.mfaSecret,
-    encoding: "base32",
-    token,
-    window: 1,
-  });
-
-  if (!verified) {
-    return res.status(400).json({
-      message: "Invalid code",
-    });
-  }
-
-  const jwtToken = generateToken(user);
-
-  res.json({
-    token: jwtToken,
-  });
-};
+    }
+  })
+}
