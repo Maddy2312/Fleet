@@ -28,6 +28,13 @@ if(!process.env.IMAGEKIT_PRIVATE_KEY){
     throw new Error("IMAGEKIT_PRIVATE_KEY is not defined");
 }
 
+if(!process.env.Razorpay_API_KEY){
+    throw new Error("Razorpay_API_KEY is not defined");
+}
+if(!process.env.Razorpay_KEY_SECRET){
+    throw new Error("Razorpay_KEY_SECRET is not defined");
+}
+
 export const config = {
     port : process.env.PORT,
     mongoURI : process.env.MONGO_URI,
@@ -36,5 +43,7 @@ export const config = {
     GOOGLE_CLIENT_SECRET : process.env.GOOGLE_CLIENT_SECRET,
     GOOGLE_CALLBACK_URI : process.env.GOOGLE_CALLBACK_URI,
     NODE_ENV : process.env.NODE_ENV,
-    IMAGEKIT_PRIVATE_KEY : process.env.IMAGEKIT_PRIVATE_KEY
+    IMAGEKIT_PRIVATE_KEY : process.env.IMAGEKIT_PRIVATE_KEY,
+    Razorpay_API_KEY : process.env.Razorpay_API_KEY,
+    Razorpay_KEY_SECRET : process.env.Razorpay_KEY_SECRET,
 }

@@ -8,35 +8,41 @@ const Cart = () => {
   const {
     handleGetCartItems,
     handleIncrementCartItemQuantity,
+    handleCreateCardOrder
   } = useCart();
+
+  const user = useSelector((state) => state.auth.user);
 
    const { error, isLoading, Razorpay } = useRazorpay();
 
-  const handlePayment = () => {
+  const handleCheckout = async() => {
+    const order = await handleCreateCardOrder();
+    console.log(order);
+
     const options = {
-      key: "YOUR_RAZORPAY_KEY",
-      amount: 50000, // Amount in paise
-      currency: "INR",
-      name: "Test Company",
+      key: "rzp_test_SzttrpbKBuxAIQ",
+      amount: order.amount,
+      currency: order.currency,
+      name: "fleet",
       description: "Test Transaction",
-      order_id: "order_9A33XWu170gUtm", // Generate order_id on server
+      order_id: order.id, 
       handler: (response) => {
         console.log(response);
         alert("Payment Successful!");
       },
       prefill: {
-        name: "John Doe",
-        email: "john.doe@example.com",
-        contact: "9999999999",
+        name: user?.name,
+        email: user?.email,
+        contact: user?.contact,
       },
       theme: {
-        color: "#F37254",
+        color: "#000000",
       },
     };
 
     const razorpayInstance = new Razorpay(options);
     razorpayInstance.open();
-  };
+  }
 
   const cart = useSelector((state) => state.cart);
 
@@ -242,7 +248,7 @@ const Cart = () => {
               </div>
 
               <button
-              onClick={handlePayment}
+              onClick={handleCheckout}
                className="w-full mt-8 bg-white text-black py-4 rounded-full font-bold hover:bg-zinc-200 transition">
                 Checkout Now
               </button>
