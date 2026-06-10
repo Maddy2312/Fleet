@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from "react-redux";
-import { setItems, addItem, setError, setLoading, incrementCartItemQuantityByOne } from "../state/cart.slice.js";
+import { setCart, addItem, setError, setLoading, incrementCartItemQuantityByOne } from "../state/cart.slice.js";
 import { addItemToCart, getCartItems, incrementCartItemQuantity } from "../services/cart.api.js";
 
 
@@ -14,7 +14,7 @@ const useCart = () => {
 
     const handleGetCartItems = async () => {
         const data = await getCartItems();
-        dispatch(setItems(data.cart.items));
+        dispatch(setCart(data.cart));
     }
 
     const handleIncrementCartItemQuantity = async ({productId, variantId}) => {

@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 
 const Nav = () => {
   const user = useSelector((state) => state.auth.user);
-  const cartItems = useSelector((state) => state.cart.items);
+  const cartItems = useSelector((state) => state.cart?.items);
 
   const [isDark, setIsDark] = useState(() => {
     return (

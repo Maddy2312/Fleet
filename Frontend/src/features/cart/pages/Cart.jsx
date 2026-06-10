@@ -4,19 +4,28 @@ import { Trash2, Minus, Plus } from "lucide-react";
 import useCart from "../hook/useCart.js";
 
 const Cart = () => {
-  const { handleGetCartItems, handleIncrementCartItemQuantity } = useCart();
+  const {
+    handleGetCartItems,
+    handleIncrementCartItemQuantity,
+  } = useCart();
 
-  const cartItems = useSelector((state) => state.cart.items);
+  const cart = useSelector((state) => state.cart);
 
   useEffect(() => {
     handleGetCartItems();
   }, []);
 
+  console.log(cart);
+
+  const cartItems = Array.isArray(cart?.items)
+    ? cart.items
+    : Array.isArray(cart?.items?.items)
+    ? cart.items.items
+    : [];
+
   const subtotal = useMemo(() => {
     return cartItems.reduce((acc, item) => {
-      const variant = item.product?.variants?.find(
-        (v) => v._id === item.variant
-      );
+      const variant = item.product?.variants;
 
       const price = variant
         ? variant.price.amount
@@ -49,7 +58,6 @@ const Cart = () => {
           </div>
         ) : (
           <div className="grid lg:grid-cols-3 gap-8">
-            {/* CART ITEMS */}
             <div className="lg:col-span-2 bg-zinc-900 border border-zinc-800 rounded-3xl p-8">
               <div className="hidden md:grid grid-cols-12 gap-4 border-b border-zinc-800 pb-4 mb-6 text-sm uppercase tracking-wider text-zinc-400">
                 <div className="col-span-6">Product</div>
@@ -65,9 +73,7 @@ const Cart = () => {
               </div>
 
               {cartItems.map((item) => {
-                const variant = item.product?.variants?.find(
-                  (v) => v._id === item.variant
-                );
+                const variant = item.product?.variants;
 
                 const image =
                   variant?.images?.[0]?.url ||
@@ -102,13 +108,11 @@ const Cart = () => {
                         {variant && (
                           <>
                             <p className="text-zinc-400 mt-2">
-                              Color:{" "}
-                              {variant.attributes?.color}
+                              Color: {variant.attributes?.color}
                             </p>
 
                             <p className="text-zinc-400">
-                              Size:{" "}
-                              {variant.attributes?.size}
+                              Size: {variant.attributes?.size}
                             </p>
                           </>
                         )}
@@ -122,9 +126,7 @@ const Cart = () => {
                     {/* QUANTITY */}
                     <div className="md:col-span-3 flex justify-center">
                       <div className="flex items-center border border-zinc-700 rounded-full">
-                        <button
-                          className="px-4 py-2 hover:bg-zinc-800 rounded-l-full"
-                        >
+                        <button className="px-4 py-2 hover:bg-zinc-800 rounded-l-full">
                           <Minus size={16} />
                         </button>
 
@@ -133,7 +135,12 @@ const Cart = () => {
                         </span>
 
                         <button
-                          onClick={()=>handleIncrementCartItemQuantity({productId: item.product._id, variantId: item.variant})}
+                          onClick={() =>
+                            handleIncrementCartItemQuantity({
+                              productId: item.product._id,
+                              variantId: item.variant,
+                            })
+                          }
                           className="px-4 py-2 hover:bg-zinc-800 rounded-r-full"
                         >
                           <Plus size={16} />
@@ -143,8 +150,7 @@ const Cart = () => {
 
                     {/* TOTAL */}
                     <div className="md:col-span-2 text-center font-bold text-lg">
-                      {currency}{" "}
-                      {(price * item.quantity).toFixed(2)}
+                      {currency} {(price * item.quantity).toFixed(2)}
                     </div>
 
                     {/* DELETE */}
@@ -211,8 +217,7 @@ const Cart = () => {
               </button>
 
               <div className="mt-6 text-sm text-zinc-500">
-                Secure checkout with encrypted payment
-                processing.
+                Secure checkout with encrypted payment processing.
               </div>
             </div>
           </div>
