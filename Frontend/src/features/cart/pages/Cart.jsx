@@ -2,12 +2,41 @@ import React, { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { Trash2, Minus, Plus } from "lucide-react";
 import useCart from "../hook/useCart.js";
+import { useRazorpay } from "react-razorpay";
 
 const Cart = () => {
   const {
     handleGetCartItems,
     handleIncrementCartItemQuantity,
   } = useCart();
+
+   const { error, isLoading, Razorpay } = useRazorpay();
+
+  const handlePayment = () => {
+    const options = {
+      key: "YOUR_RAZORPAY_KEY",
+      amount: 50000, // Amount in paise
+      currency: "INR",
+      name: "Test Company",
+      description: "Test Transaction",
+      order_id: "order_9A33XWu170gUtm", // Generate order_id on server
+      handler: (response) => {
+        console.log(response);
+        alert("Payment Successful!");
+      },
+      prefill: {
+        name: "John Doe",
+        email: "john.doe@example.com",
+        contact: "9999999999",
+      },
+      theme: {
+        color: "#F37254",
+      },
+    };
+
+    const razorpayInstance = new Razorpay(options);
+    razorpayInstance.open();
+  };
 
   const cart = useSelector((state) => state.cart);
 
@@ -212,7 +241,9 @@ const Cart = () => {
                 </div>
               </div>
 
-              <button className="w-full mt-8 bg-white text-black py-4 rounded-full font-bold hover:bg-zinc-200 transition">
+              <button
+              onClick={handlePayment}
+               className="w-full mt-8 bg-white text-black py-4 rounded-full font-bold hover:bg-zinc-200 transition">
                 Checkout Now
               </button>
 
