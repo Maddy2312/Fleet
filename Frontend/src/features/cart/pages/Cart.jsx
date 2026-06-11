@@ -3,12 +3,17 @@ import { useSelector } from "react-redux";
 import { Trash2, Minus, Plus } from "lucide-react";
 import useCart from "../hook/useCart.js";
 import { useRazorpay } from "react-razorpay";
+import { useNavigate } from "react-router";
 
 const Cart = () => {
+
+  const navigate = useNavigate();
+
   const {
     handleGetCartItems,
     handleIncrementCartItemQuantity,
-    handleCreateCardOrder
+    handleCreateCardOrder,
+    handleVerifyOrder
   } = useCart();
 
   const user = useSelector((state) => state.auth.user);
@@ -26,9 +31,17 @@ const Cart = () => {
       name: "fleet",
       description: "Test Transaction",
       order_id: order.id, 
-      handler: (response) => {
-        console.log(response);
+      handler: async(response) => {
         alert("Payment Successful!");
+        const res = await handleVerifyOrder({
+          razorpay_order_id: response.razorpay_order_id,
+          razorpay_payment_id: response.razorpay_payment_id,
+          razorpay_signature: response.razorpay_signature,
+        })
+        if(res){
+          alert("Payment Successful!");
+          navigate(`/order-success?order_id=${response?.razorpay_order_id}`)
+        }
       },
       prefill: {
         name: user?.name,

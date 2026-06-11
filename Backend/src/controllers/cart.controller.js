@@ -1,8 +1,11 @@
-import mongoose from "mongoose";
 import { stockOfVariant } from "../dao/product.dao.js";
 import cartModel from "../models/cart.model.js";
 import productModel from "../models/product.model.js";
 import { createOrder } from "../services/payment.service.js";
+import { getcartDetails } from "../dao/cart.dao.js";
+import paymentModel from "../models/payment.model.js";
+import { validatePaymentVerification } from "razorpay/dist/utils/razorpay-utils.js";
+import { config } from "../config/config.js";
 
 export const addToCart = async (req, res) => {
   const { productId, variantId } = req.params;
@@ -82,60 +85,8 @@ export const getCart = async (req, res) => {
   // let cart = await cartModel
   //   .findOne({ user: user._id })
   //   .populate("items.product");
-  let cart = (await cartModel.aggregate([
-    {
-      $match: {
-        user: new mongoose.Types.ObjectId(user._id)
-      }
-    },
-    { $unwind: { path: '$items' } },
-    {
-      $lookup: {
-        from: 'products',
-        localField: 'items.product',
-        foreignField: '_id',
-        as: 'items.product'
-      }
-    },
-    { $unwind: { path: '$items.product' } },
-    {
-      $unwind: { path: '$items.product.variants' }
-    },
-    {
-      $match: {
-        $expr: {
-          $eq: [
-            '$items.variant',
-            '$items.product.variants._id'
-          ]
-        }
-      }
-    },
-    {
-      $addFields: {
-        itemPrice: {
-          price: {
-            $multiply: [
-              '$items.quantity',
-              '$items.product.variants.price.amount'
-            ]
-          },
-          currency:
-            '$items.product.variants.price.currency'
-        }
-      }
-    },
-    {
-      $group: {
-        _id: '$_id',
-        totalPrice: { $sum: '$itemPrice.price' },
-        currency: {
-          $first: '$itemPrice.currency'
-        },
-        items: { $push: '$items' }
-      }
-    }
-  ]))[0]
+  let cart = await getcartDetails(user._id);
+
   if (!cart) {
     cart = await cartModel.create({ user: user._id });
   }
@@ -196,10 +147,85 @@ export const updateQuantity = async (req, res) => {
 
 
 export const createOrderController = async(req, res)=>{
-    const order = await createOrder({amount: 1000, currency: "USD"});
+    const cart = await getcartDetails(req.user._id);
+    if(!cart) {
+        return res.status(404).json({
+            success: false,
+            message: "Cart is empty",
+        })
+    }
+    const order = await createOrder({amount: cart.totalPrice, currency: cart.currency});
+    await paymentModel.create({
+      user: req.user._id,
+      price: {
+        amount: cart.totalPrice,
+        currency: cart.currency,
+      },
+      razorpay: {
+        orderId: order.id,
+      },
+      orderItems: cart.items.map((item) => {
+        return {
+          title: item.product.title,
+          productId: item.product._id,
+          variantId: item.variant._id,
+          quantity: item.quantity,
+          price: {
+            amount: item.product.variants.price.amount || item.product.price.amount,
+            currency: item.product.variants.price.currency || item.product.price.currency,
+          },
+          images: item.product.variants.images || item.product.images,
+          description: item.product.description,
+        }
+      }),
+    });
     return res.status(200).json({
         success: true,
         message: "Order created successfully",
         order,
     });
+}
+
+export const verifyOrderController = async (req, res) => {
+  const {
+    razorpay_order_id,
+    razorpay_payment_id,
+    razorpay_signature
+  } = req.body;
+
+  const order = await paymentModel.findOne({
+    "razorpay.orderId": razorpay_order_id,
+    status: "PENDING",
+    
+  });
+
+  if(!order) {
+    return res.status(404).json({
+      success: false,
+      message: "Order not found",
+    })
+  }
+
+  const isValid = validatePaymentVerification({
+    order_id: razorpay_order_id,
+    payment_id: razorpay_payment_id,
+  }, razorpay_signature, config.Razorpay_KEY_SECRET);
+
+  if(!isValid) {
+    order.status = "FAILED";
+    await order.save();
+    return res.status(400).json({
+      success: false,
+      message: "Payment verification failed",
+    })
+  }
+
+  order.status = "SUCCESS";
+  order.razorpay.paymentId = razorpay_payment_id;
+  order.razorpay.signature = razorpay_signature;
+  await order.save();
+  return res.status(200).json({
+    success: true,
+    message: "Order verified successfully",
+  })
 }
