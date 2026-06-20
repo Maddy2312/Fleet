@@ -13,7 +13,7 @@ const cartSlice = createSlice({
     reducers: {
 
         setCart: (state, action) => {
-            state.items = action.payload;
+            state.items = action.payload.items;
             state.totalPrice = action.payload.totalPrice;
             state.currency = action.payload.currency;
         },
